@@ -17,5 +17,6 @@ Example CSV Format:
 As mentioned above, each test is added to the specified file. If more than one test is added to a file, then the flow of tests needs to be controlled with the stonewall option and the reporting groups setup as desired. Typically, one file per test is recommended unless the two tests run concurrently (e.g. mixed workloads using multiple jobs).
 
 ### Usage
-runfio.py [-h] [-p] <NVMe Device> <CSV File> <Output Directory>
+`python3 runfio.py [-h] [-p] <NVMe Device> <CSV File> <Output Directory>`
+
 -p: Parse only - Just create the FIO job files, but don't run them.
