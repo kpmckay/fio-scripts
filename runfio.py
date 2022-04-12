@@ -115,7 +115,7 @@ if __name__ == '__main__':
    summary.write(','.join(header) + "\n")
 
    for job in fiofiles:
-      with open(str(job).strip() + ".summary.log") as summaryfile:
+      with open(str(job).strip() + ".summary.log", "w") as summaryfile:
          j = json.loads(summaryfile.read())
          for job in j['jobs']:
             values = []
@@ -127,7 +127,7 @@ if __name__ == '__main__':
                values.append(str(job[mode]['clat_ns']['max']))
                values.append(str(job[mode]['clat_ns']['mean']))
                values.append(str(job[mode]['clat_ns']['stddev']))
-         summary.write(','.join(values) + "\n")         
+            summary.write(','.join(values) + "\n")         
       summaryfile.close()
    summary.close()
 
