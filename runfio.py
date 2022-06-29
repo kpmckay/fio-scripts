@@ -64,7 +64,7 @@ if __name__ == '__main__':
       # Open FIO file to write
       fiofile = open(os.path.join(args.out, test), 'a')
       # Print the job name
-      fiofile.write("\n" + "[" + name + "]\n")
+      fiofile.write("[" + name + "]\n")
       # Populate the drive to test
       fiofile.write("filename=" + str(args.ssd) + "\n") 
       # Fill in the rest of the values...
@@ -79,9 +79,9 @@ if __name__ == '__main__':
          # Everything else...
          elif str(job[i]) == '' or str(job[i]).isspace():
             continue
-         elif (str(job[i]).startswith("n") or str(job[i]).startswith("0") or str(job[i]).startswith("f")):
+         elif (str(job[i]).startswith("n") or job[i] == 0 or str(job[i]).startswith("f")):
             continue
-         elif (str(job[i]).startswith("y") or str(job[i]).startswith("1") or str(job[i]).startswith("t")):
+         elif (str(job[i]).startswith("y") or job[i] == 1 or str(job[i]).startswith("t")):
             fiofile.write(str(headers[i]) + "\n")
          else:
             fiofile.write(str(headers[i]) + "=" + str(job[i]) + "\n")
