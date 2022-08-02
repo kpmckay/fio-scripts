@@ -1,6 +1,6 @@
 file,job,format,percentile_list,ioengine,direct,norandommap,randrepeat,group_reporting, stonewall,new_group, rw, rwmixread, numjobs,iodepth, bs,time_based, ramp_time, runtime
 ran_precon.fio,ran_precon,yes,1:5:10:20:30:50:60:70:75:80:85:90:95:99:99.9:99.99:99.999:99.9999:99.99999,libaio,1,,0,yes,,,randwrite, ,8,32,4k,yes,,28800
-ran_sweep.fio,ran_write,,1:5:10:20:30:50:60:70:75:80:85:90:95:99:99.9:99.99:99.999:99.9999:99.99999,libaio,1,yes,0,yes,,,randwrite,,8,32,4k,yes,120,3200
+ran_sweep.fio,ran_write,,1:5:10:20:30:50:60:70:75:80:85:90:95:99:99.9:99.99:99.999:99.9999:99.99999,libaio,1,yes,0,yes,,,randwrite,,8,32,4k,yes,120,600
 ran_sweep.fio,ran_0595,,1:5:10:20:30:50:60:70:75:80:85:90:95:99:99.9:99.99:99.999:99.9999:99.99999,libaio,1,yes,0,yes,yes,yes,randrw,5,8,32,4k,yes,120,600
 ran_sweep.fio,ran_1090,,1:5:10:20:30:50:60:70:75:80:85:90:95:99:99.9:99.99:99.999:99.9999:99.99999,libaio,1,yes,0,yes,yes,yes,randrw,10,8,32,4k,yes,120,600
 ran_sweep.fio,ran_1585,,1:5:10:20:30:50:60:70:75:80:85:90:95:99:99.9:99.99:99.999:99.9999:99.99999,libaio,1,yes,0,yes,yes,yes,randrw,15,8,32,4k,yes,120,600
@@ -20,4 +20,4 @@ ran_sweep.fio,ran_8020,,1:5:10:20:30:50:60:70:75:80:85:90:95:99:99.9:99.99:99.99
 ran_sweep.fio,ran_8515,,1:5:10:20:30:50:60:70:75:80:85:90:95:99:99.9:99.99:99.999:99.9999:99.99999,libaio,1,yes,0,yes,yes,yes,randrw,85,8,32,4k,yes,120,600
 ran_sweep.fio,ran_9010,,1:5:10:20:30:50:60:70:75:80:85:90:95:99:99.9:99.99:99.999:99.9999:99.99999,libaio,1,yes,0,yes,yes,yes,randrw,90,8,32,4k,yes,120,600
 ran_sweep.fio,ran_9505,,1:5:10:20:30:50:60:70:75:80:85:90:95:99:99.9:99.99:99.999:99.9999:99.99999,libaio,1,yes,0,yes,yes,yes,randrw,95,8,32,4k,yes,120,600
-ran_sweep.fio,ran_read,,1:5:10:20:30:50:60:70:75:80:85:90:95:99:99.9:99.99:99.999:99.9999:99.99999,libaio,1,yes,0,yes,,,randread,,8,32,4k,yes,120,3200
+ran_sweep.fio,ran_read,,1:5:10:20:30:50:60:70:75:80:85:90:95:99:99.9:99.99:99.999:99.9999:99.99999,libaio,1,yes,0,yes,yes,yes,randread,,8,32,4k,yes,120,600
