@@ -19,6 +19,8 @@ if __name__ == '__main__':
       help='Output directory for FIO jobs')
    parser.add_argument('-p', '--parse-only', dest='parse_only', action='store_true',
       help='Parse CSV only')
+   parser.add_argument('-c', '--buffer_compress_percentage', dest='bcp',
+      help='Add buffer_compress_percentage option to FIO control files')
 
    parser.set_defaults(parse_only='store_false')
    (args) = parser.parse_args()
@@ -67,6 +69,10 @@ if __name__ == '__main__':
       fiofile.write("[" + name + "]\n")
       # Populate the drive to test
       fiofile.write("filename=" + str(args.ssd) + "\n") 
+      # Add compression setting if applicable
+      if args.bcp is not None:
+         if int(args.bcp) >= 0 and int(args.bcp) <= 100:
+            fiofile.write("buffer_compress_percentage=" + args.bcp + "\n")
       # Fill in the rest of the values...
       for i in range(len(job)):
          # Special cases taken care of separately
