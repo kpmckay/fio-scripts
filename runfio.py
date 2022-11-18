@@ -15,19 +15,22 @@ if __name__ == '__main__':
       help='NVMe device to test (/dev/...')
    parser.add_argument('csv', metavar='<CSV File>',
       help='CSV file containing FIO job parameters')
-   parser.add_argument('out', metavar='<Output Directory>', 
+   parser.add_argument('out', metavar='<Output Directory>',
       help='Output directory for FIO jobs')
    parser.add_argument('-p', '--parse-only', dest='parse_only', action='store_true',
       help='Parse CSV only')
+   parser.add_argument('-n', '--numa', dest='numa',
+      help='Specify NUMA Node')
    parser.add_argument('-c', '--buffer_compress_percentage', dest='bcp',
       help='Add buffer_compress_percentage option to FIO control files')
 
-   parser.set_defaults(parse_only='store_false')
+   parser.set_defaults(parse_only='store_false', numa=None)
    (args) = parser.parse_args()
 
-   headers  = []   # Will hold CSV header values 
-   fiojobs  = []   # Will hold lists of FIO jobs to create
-   fiofiles = []   # Will hold list if FIO files to run
+   headers    = []   # Will hold CSV header values
+   fiojobs    = []   # Will hold list of FIO jobs to create
+   fiofiles   = []   # Will hold list if FIO files to run
+   formatjobs = []   # Will hold list of jobs that require a format
 
    with open(args.csv, newline='') as csvfile:
       csvdata = csv.reader(csvfile, delimiter=',')
@@ -40,7 +43,7 @@ if __name__ == '__main__':
          if row == []:
             continue
          elif not headers:
-            headers = row 
+            headers = row
          else:
             fiojobs.append(row)
       csvfile.close()
@@ -58,17 +61,18 @@ if __name__ == '__main__':
       test = str(job[headers.index('file')])
       nvmf = str(job[headers.index('format')])
       name = str(job[headers.index('job')])
-      # Check if a format is needed before running the job file 
+      # Check if a format is needed before running the job file
       if nvmf.startswith("y") or nvmf.startswith("1") or nvmf.startswith("t"):
-         test = "format-" + test 
-      if test not in fiofiles and ("format-" + test) not in fiofiles:
+         if test not in formatjobs:
+            formatjobs.append(test) 
+      if test not in fiofiles:
          fiofiles.append(test)
       # Open FIO file to write
       fiofile = open(os.path.join(args.out, test), 'a')
       # Print the job name
       fiofile.write("[" + name + "]\n")
       # Populate the drive to test
-      fiofile.write("filename=" + str(args.ssd) + "\n") 
+      fiofile.write("filename=" + str(args.ssd) + "\n")
       # Add compression setting if applicable
       if args.bcp is not None:
          if int(args.bcp) >= 0 and int(args.bcp) <= 100:
@@ -98,12 +102,20 @@ if __name__ == '__main__':
 
    os.chdir(args.out)
 
+   fio_append = []
+   if args.numa is not None:
+      fio_append.append("--numa_cpu_nodes=" + args.numa)
+      fio_append.append("--numa_mem_policy=local")
+
    # Run the FIO jobs
    for fio in fiofiles:
-      if fio.startswith("format-"):   
-          subprocess.run(["nvme", "format", str(args.ssd), "--ses=1", "-f"])
+      print("Running FIO control file " + fio) 
+      if fio in formatjobs:
+         print("   Format requested before starting FIO job...\n") 
+         subprocess.run(["nvme", "format", str(args.ssd), "--ses=1"])
       subprocess.run(["fio", fio, "--output-format=json+",
-         "--output=" + fio + ".summary.log"]) 
+         "--output=" + fio + ".summary.log"] + fio_append)
+      print("\n") 
 
 print("\nComplete\n")
 sys.exit()
