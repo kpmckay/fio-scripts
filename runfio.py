@@ -94,7 +94,7 @@ if __name__ == '__main__':
          elif (str(job[i]).startswith("y") or job[i] == 1 or str(job[i]).startswith("t")):
             fiofile.write(str(headers[i]) + "\n")
          else:
-            fiofile.write(str(headers[i]) + "=" + str(job[i]) + "\n")
+            fiofile.write(str(headers[i]) + "=" + str(job[i]).replace(";",",") + "\n")
       fiofile.close()
 
    if args.parse_only is True:
