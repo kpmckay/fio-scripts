@@ -39,8 +39,8 @@ THe -c option passes a "buffer_compress_percentage" option to the generated FIO 
 ## Compression Settings
 ScaleFlux devices support transparent compression. By default, FIO injects a percentage of zeroes every 512-bytes when using the "buffer_compress_percentage" option (assuming default "buffer_compress_chunk" value). This is sufficient for testing performance with compressible data. The following table maps the "buffer_compress_percentage" setting to the achieved compression ratio on two generations of ScaleFlux devices:
 
-| buffer_compress_percent	| CSD 2000 CR | CSD 3000 CR |
-|-------------------------|-------------|-------------|
+| buffer_compress_percentage	| CSD 2000 CR | CSD 3000 CR |
+|----------------------------|-------------|-------------|
 | 0 | 1 | 1 |
 | 1 | 1 | 1 |
 | 2 | 1 | 1 |
