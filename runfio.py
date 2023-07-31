@@ -21,8 +21,10 @@ if __name__ == '__main__':
       help='Parse CSV only')
    parser.add_argument('-n', '--numa', dest='numa',
       help='Specify NUMA Node')
+   parser.add_argument('-f', '--output-format', dest='format', default='terse,json+',
+      help='Specify Output Format')
    parser.add_argument('-c', '--buffer_compress_percentage', dest='bcp',
-      help='Add buffer_compress_percentage option to FIO control files')
+      help='Add/override buffer_compress_percentage option to FIO control files')
 
    parser.set_defaults(parse_only='store_false', numa=None)
    (args) = parser.parse_args()
@@ -89,16 +91,16 @@ if __name__ == '__main__':
          # Everything else...
          elif str(job[i]) == '' or str(job[i]).isspace():
             continue
-         elif (str(job[i]).startswith("n") or job[i] == 0 or str(job[i]).startswith("f")):
+         elif (str(job[i]) == "no" or job[i] == 0 or str(job[i]) == "n"):
             continue
-         elif (str(job[i]).startswith("y") or job[i] == 1 or str(job[i]).startswith("t")):
+         elif (str(job[i]) == "buffer_compress_percentage" and args.bcp is not None):
+            continue
+         elif (str(job[i]) == "yes" or job[i] == 1 or str(job[i]) == "y"):
             fiofile.write(str(headers[i]) + "\n")
          else:
             fiofile.write(str(headers[i]) + "=" + str(job[i]).replace(";",",") + "\n")
+      fiofile.write("\n")
       fiofile.close()
-
-   if args.parse_only is True:
-      sys.exit()
 
    os.chdir(args.out)
 
@@ -106,6 +108,19 @@ if __name__ == '__main__':
    if args.numa is not None:
       fio_append.append("--numa_cpu_nodes=" + args.numa)
       fio_append.append("--numa_mem_policy=local")
+   if args.format is not None:
+      fio_append.append("--output-format=" + args.format)
+
+   # Verify that the generated FIO control files parse properly
+   for fio in fiofiles:
+      parse_result = subprocess.run(["fio", fio, "--parse-only"], capture_output=True, text=True) 
+      if parse_result.stderr:
+          print("Failed to parse FIO file " + fio + ":")
+          print(parse_result.stderr)
+          sys.exit()
+
+   if args.parse_only is True:
+      sys.exit()
 
    # Run the FIO jobs
    for fio in fiofiles:
@@ -113,8 +128,8 @@ if __name__ == '__main__':
       if fio in formatjobs:
          print("   Format requested before starting FIO job...\n") 
          subprocess.run(["nvme", "format", str(args.ssd), "--ses=1"])
-      subprocess.run(["fio", fio, "--output-format=json+",
-         "--output=" + fio + ".summary.log"] + fio_append)
+      subprocess.run(["fio", fio, "--output=" + fio + ".summary.log"] + fio_append) 
+
       print("\n") 
 
 print("\nComplete\n")
